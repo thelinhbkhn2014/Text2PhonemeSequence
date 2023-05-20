@@ -16,7 +16,7 @@ The library uses CharsiuG2P to convert text to phoneme sequences. Users can find
 from text2phonemesequence import Text2PhonemeSequence
 
 # Load Text2PhonemeSequence
-model = Text2PhonemeSequence(pretrained_g2p_model='charsiu/g2p_multilingual_byT5_tiny_16_layers_100', language='eng-uk', is_cuda=False)
+model = Text2PhonemeSequence(pretrained_g2p_model='charsiu/g2p_multilingual_byT5_tiny_16_layers_100', language='eng-us', is_cuda=False)
 
 
 # Convert a raw corpus
