@@ -3,8 +3,6 @@ from segments import Tokenizer
 import os
 from tqdm import tqdm
 
-
-
 class Text2PhonemeSequence:
     def __init__(self, pretrained_g2p_model='charsiu/g2p_multilingual_byT5_tiny_16_layers_100', language='vie-c', is_cuda=True):
         self.tokenizer = AutoTokenizer.from_pretrained('google/byt5-small')
@@ -38,7 +36,7 @@ class Text2PhonemeSequence:
         list_words = []
         print("Building vocabulary!")
         for line in list_lines:
-            words = line.strip().split(" ")
+            words = line.strip().split("|")[-1].split(" ")
             for w in words:
                 w = w.replace(seperate_syllabel_token, " ").lower()
                 if w not in self.phone_dict.keys():
@@ -69,10 +67,12 @@ class Text2PhonemeSequence:
         f.close()
         f = open(output_file, 'w')
         for line in tqdm(list_lines):
-            line = line.strip().split(" ")
-            for i in range(len(line)):
-                line[i] = self.phone_dict[line[i].replace(seperate_syllabel_token, " ").lower()][1]
-            f.write(" ▁ ".join(line))
+            line = line.strip().split("|")
+            prefix = line[0]
+            list_words = line[-1].split(" ")
+            for i in range(len(list_words)):
+                list_words[i] = self.phone_dict[list_words[i].replace(seperate_syllabel_token, " ").lower()][1]
+            f.write(prefix + "|" + " ▁ ".join(list_words))
             f.write("\n")
         f.close()
     
