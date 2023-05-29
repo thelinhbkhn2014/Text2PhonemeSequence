@@ -9,7 +9,7 @@ class Text2PhonemeSequence:
         self.model = T5ForConditionalGeneration.from_pretrained(pretrained_g2p_model)
         self.is_cuda = is_cuda
         if self.is_cuda:
-            self.model = model.cuda()
+            self.model = self.model.cuda()
         self.punctuation = list('.?!,:;-()[]{}<>"') + list("'/‘”“/&#~@^|") + ['...', '*']
         self.segment_tool = Tokenizer()
         self.language = language
