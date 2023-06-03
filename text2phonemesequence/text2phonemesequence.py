@@ -4,8 +4,8 @@ import os
 from tqdm import tqdm
 
 class Text2PhonemeSequence:
-    def __init__(self, pretrained_g2p_model='charsiu/g2p_multilingual_byT5_tiny_16_layers_100', language='vie-c', is_cuda=True):
-        self.tokenizer = AutoTokenizer.from_pretrained('google/byt5-small')
+    def __init__(self, pretrained_g2p_model='charsiu/g2p_multilingual_byT5_tiny_16_layers_100', tokenizer= 'google/byt5-small', language='vie-c', is_cuda=True):
+        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
         self.model = T5ForConditionalGeneration.from_pretrained(pretrained_g2p_model)
         self.is_cuda = is_cuda
         if self.is_cuda:
@@ -80,6 +80,7 @@ class Text2PhonemeSequence:
         list_words = sentence.split(" ")
         list_phones = []
         for i in range(len(list_words)):
+            list_words[i] = list_words[i].replace(seperate_syllabel_token, " ")
             if list_words[i] in self.phone_dict:
                 list_phones.append(self.phone_dict[list_words[i]][0])
             elif list_words[i] in self.punctuation:
