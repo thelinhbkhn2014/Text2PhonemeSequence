@@ -29,7 +29,7 @@ class Text2PhonemeSequence:
                 else:
                     self.phone_dict[w_p[0]] = [w_p[1].split(',')[0]]
 
-    def infer_dataset(self, input_file='', seperate_syllabel_token= "_", output_file=""):
+    def infer_dataset(self, input_file='', seperate_syllabel_token= "_", output_file="", batch_size=64):
         f = open(input_file, 'r')
         list_lines = f.readlines()
         f.close()
@@ -42,19 +42,37 @@ class Text2PhonemeSequence:
                 if w not in self.phone_dict.keys():
                     list_words.append(w)
         list_words_p = ['<' + self.language + '>: ' + i for i in list_words]
-        out = self.tokenizer(list_words_p, padding=True, add_special_tokens=False, return_tensors='pt')
-        if self.is_cuda:
-            out['input_ids'] = out['input_ids'].cuda()
-            out['attention_mask'] = out['attention_mask'].cuda()
-        if self.language + '.tsv' not in self.phoneme_length.keys():
-            self.phoneme_length[self.language + '.tsv'] = 50
-        preds = self.model.generate(**out, num_beams=1, max_length=self.phoneme_length[self.language + '.tsv'])
-        phones = self.tokenizer.batch_decode(preds.tolist(),skip_special_tokens=True)
-        assert len(phones) == len(list_words)
-        for i in range(len(phones)):
-            if list_words[i] in self.punctuation:
-                phones[i] = list_words[i]
-            self.phone_dict[list_words[i]] = [phones[i]]
+        list_words_p_batch = []
+        list_words_batch = []
+        temp_list = []
+        temp_list_raw = []
+        for m in range(len(list_words_p)):
+            temp_list.append(list_words_p[m])
+            temp_list_raw.append(list_words[m])
+            if len(temp_list) == batch_size:
+                list_words_p_batch.append(temp_list)
+                temp_list = []
+                list_words_batch.append(temp_list_raw)
+                temp_list_raw = []
+        if len(temp_list) != 0:
+            list_words_p_batch.append(temp_list)
+            list_words_batch.append(temp_list_raw)
+
+        for j in range(len(list_words_p_batch)):
+            out = self.tokenizer(list_words_p_batch[j], padding=True, add_special_tokens=False, return_tensors='pt')
+            if self.is_cuda:
+                out['input_ids'] = out['input_ids'].cuda()
+                out['attention_mask'] = out['attention_mask'].cuda()
+            if self.language + '.tsv' not in self.phoneme_length.keys():
+                self.phoneme_length[self.language + '.tsv'] = 50
+            preds = self.model.generate(**out, num_beams=1, max_length=self.phoneme_length[self.language + '.tsv'])
+            phones = self.tokenizer.batch_decode(preds.tolist(),skip_special_tokens=True)
+            assert len(phones) == len(list_words_p_batch[j])
+
+            for i in range(len(phones)):
+                if list_words_batch[j][i] in self.punctuation:
+                    phones[i] = list_words_batch[j][i]
+                self.phone_dict[list_words_batch[j][i]] = [phones[i]]
         for w in self.phone_dict.keys():
             try:
                 segmented_phone = self.segment_tool(self.phone_dict[w][0], ipa=True)

@@ -20,7 +20,7 @@ model = Text2PhonemeSequence(pretrained_g2p_model='charsiu/g2p_multilingual_byT5
 
 
 # Convert a raw corpus
-model.infer_dataset(input_file="/absolute/path/to/input/file", output_file="/absolute/path/to/output/file")
+model.infer_dataset(input_file="/absolute/path/to/input/file", output_file="/absolute/path/to/output/file", batch_size=64) # batch_size is the number of words fed into the CharsiuG2P toolkit per times. 
 
 # Convert a raw sentence
 model.infer_sentence("The overwhelming majority of people in this country know how to sift the wheat from the chaff in what they hear and what they read .")
