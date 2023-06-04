@@ -4,7 +4,7 @@ import os
 from tqdm import tqdm
 
 class Text2PhonemeSequence:
-    def __init__(self, pretrained_g2p_model='charsiu/g2p_multilingual_byT5_tiny_16_layers_100', tokenizer= 'google/byt5-small', language='vie-c', is_cuda=True):
+    def __init__(self, pretrained_g2p_model='charsiu/g2p_multilingual_byT5_small_100', tokenizer= 'google/byt5-small', language='vie-c', is_cuda=True):
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
         self.model = T5ForConditionalGeneration.from_pretrained(pretrained_g2p_model)
         self.is_cuda = is_cuda
