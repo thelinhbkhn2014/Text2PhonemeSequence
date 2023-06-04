@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: text2phonemesequence
-Version: 0.0.8
+Version: 0.1.2
 Summary: A Python Library to convert text to phoneme sequence used for XPhoneBERT
 Home-page: https://github.com/thelinhbkhn2014/Text2PhonemeSequence
 Author: Linh The Nguyen
@@ -20,7 +20,7 @@ Description: # Text2PhonemeSequence: A Python Library to convert text to phoneme
             `$ pip install text2phonemesequence` 
         
         ## Usage example <a name="example"></a>
-        The library uses CharsiuG2P to convert text to phoneme sequences. Users can find the information on `pretrained_g2p_model` and `language` in the [CharsiuG2P](https://github.com/lingjzhu/CharsiuG2P/tree/main) repository. For languages where words are not separated by spaces such as Vietnamese and Chinese, users need to use an external tokenizer before feeding the dataset or sentences into our **Text2PhonemeSequence** library. 
+        The library uses [CharsiuG2P](https://github.com/lingjzhu/CharsiuG2P/tree/main) and [segments](https://pypi.org/project/segments/) toolkits to convert text to phoneme sequences. Users can find the information on `pretrained_g2p_model` and `language` in the [CharsiuG2P](https://github.com/lingjzhu/CharsiuG2P/tree/main) repository. For languages where words are not separated by spaces such as Vietnamese and Chinese, users need to use an external tokenizer before feeding the dataset or sentences into our **Text2PhonemeSequence** library. 
         
         ```python
         from text2phonemesequence import Text2PhonemeSequence
@@ -30,7 +30,7 @@ Description: # Text2PhonemeSequence: A Python Library to convert text to phoneme
         
         
         # Convert a raw corpus
-        model.infer_dataset(input_file="/absolute/path/to/input/file", output_file="/absolute/path/to/output/file")
+        model.infer_dataset(input_file="/absolute/path/to/input/file", output_file="/absolute/path/to/output/file", batch_size=64) # batch_size is the number of words fed into the CharsiuG2P toolkit  
         
         # Convert a raw sentence
         model.infer_sentence("The overwhelming majority of people in this country know how to sift the wheat from the chaff in what they hear and what they read .")
