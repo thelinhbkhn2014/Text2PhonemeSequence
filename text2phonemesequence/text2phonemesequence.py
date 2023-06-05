@@ -18,7 +18,7 @@ class Text2PhonemeSequence:
         if not os.path.exists('./' + language + ".tsv"):
             os.system("wget https://raw.githubusercontent.com/lingjzhu/CharsiuG2P/main/dicts/" + language + ".tsv")
         if os.path.exists('./' + language + ".tsv"):
-            f = open("./" + language + ".tsv", "r")
+            f = open("./" + language + ".tsv", "r", encoding="utf-8")
             list_words = f.read().strip().split("\n")
             f.close()
             for word_phone in list_words:
