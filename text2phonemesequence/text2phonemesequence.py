@@ -104,15 +104,20 @@ class Text2PhonemeSequence:
             self.phone_dict[w] = list(set(p))
         
         print(f"\nSaving vocabulary to {output_file}")
+        output = []
+        for line in tqdm(list_lines):
+            line = line.strip().split("|")
+            prefix = line[0]
+            list_words = line[-1].lower().split(" ")
+            list_phones = []
+            for i in range(len(list_words)):
+                w = list_words[i].replace(seperate_syllabel_token, " ")
+                list_phones.append(self.phone_dict[w][-1])
+            output.append(prefix + "|" + " ▁ ".join(list_phones))
+
         with open(output_file, 'w', encoding="utf-8") as f:
-            for line in tqdm(list_lines):
-                line = line.strip().split("|")
-                prefix = line[0]
-                list_words = line[-1].lower().split(" ")
-                for i in range(len(list_words)):
-                    list_words[i] = self.phone_dict[list_words[i].replace(seperate_syllabel_token, " ")][1]
-                f.write(prefix + "|" + " ▁ ".join(list_words))
-                f.write("\n")
+            for r in output:
+                f.write(f"{r}\n")
         
         print("\nDone!")
     
