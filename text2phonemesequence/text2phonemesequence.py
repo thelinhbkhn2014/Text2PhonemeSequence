@@ -18,9 +18,8 @@ class Text2PhonemeSequence:
         if not os.path.exists('./' + language + ".tsv"):
             os.system("wget https://raw.githubusercontent.com/lingjzhu/CharsiuG2P/main/dicts/" + language + ".tsv")
         if os.path.exists('./' + language + ".tsv"):
-            f = open("./" + language + ".tsv", "r", encoding="utf-8")
-            list_words = f.read().strip().split("\n")
-            f.close()
+            with open("./" + language + ".tsv", "r", encoding="utf-8") as f:
+                list_words = f.read().strip().split("\n")
             for word_phone in list_words:
                 w_p = word_phone.split("\t")
                 assert len(w_p) == 2
@@ -30,9 +29,8 @@ class Text2PhonemeSequence:
                     self.phone_dict[w_p[0]] = [w_p[1].split(',')[0]]
 
     def infer_dataset(self, input_file='', seperate_syllabel_token= "_", output_file="", batch_size=64):
-        f = open(input_file, 'r')
-        list_lines = f.readlines()
-        f.close()
+        with open(input_file, 'r') as f:
+            list_lines = f.readlines()
         list_words = []
         print("Building vocabulary!")
         for line in list_lines:
@@ -80,19 +78,15 @@ class Text2PhonemeSequence:
                 segmented_phone = self.segment_tool(self.phone_dict[w][0])
             self.phone_dict[w].append(segmented_phone)
         
-        f = open(input_file, 'r')
-        list_lines = f.readlines()
-        f.close()
-        f = open(output_file, 'w')
-        for line in tqdm(list_lines):
-            line = line.strip().split("|")
-            prefix = line[0]
-            list_words = line[-1].split(" ")
-            for i in range(len(list_words)):
-                list_words[i] = self.phone_dict[list_words[i].replace(seperate_syllabel_token, " ").lower()][1]
-            f.write(prefix + "|" + " ▁ ".join(list_words))
-            f.write("\n")
-        f.close()
+        with open(output_file, 'w') as f:
+            for line in tqdm(list_lines):
+                line = line.strip().split("|")
+                prefix = line[0]
+                list_words = line[-1].split(" ")
+                for i in range(len(list_words)):
+                    list_words[i] = self.phone_dict[list_words[i].replace(seperate_syllabel_token, " ").lower()][1]
+                f.write(prefix + "|" + " ▁ ".join(list_words))
+                f.write("\n")
     
     def infer_sentence(self, sentence="", seperate_syllabel_token="_"):
         list_words = sentence.split(" ")
