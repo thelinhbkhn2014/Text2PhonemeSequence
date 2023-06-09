@@ -7,10 +7,10 @@ from more_itertools import chunked
 
 class Text2PhonemeSequence:
     def __init__(self, 
-                 pretrained_g2p_model='charsiu/g2p_multilingual_byT5_small_100', 
-                 tokenizer= 'google/byt5-small', 
-                 language='vie-n', 
-                 is_cuda=True,
+                 pretrained_g2p_model: str = 'charsiu/g2p_multilingual_byT5_small_100', 
+                 tokenizer: str = 'google/byt5-small', 
+                 language: str ='vie-n', 
+                 is_cuda: bool = True,
                  **kwargs):
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
         self.model = T5ForConditionalGeneration.from_pretrained(pretrained_g2p_model)
@@ -59,7 +59,7 @@ class Text2PhonemeSequence:
                 self.phone_dict[word] = [phone.split(',')[0]]
 
 
-    def infer_dataset(self, input_file='', seperate_syllabel_token= "_", output_file="", batch_size=64):
+    def infer_dataset(self, input_file: str ='', seperate_syllabel_token: str = "_", output_file: str = "", batch_size: int = 64):
         """Infer batch data
         """
         with open(input_file, 'r', encoding="utf-8") as f:
@@ -76,7 +76,7 @@ class Text2PhonemeSequence:
 
         list_words_p = {i: f'<{self.language}>: {i}' for i in list_words}
 
-        batches = [dict(row) for row in list(chunked(list_words_p.items(), batch_size))]
+        batches = [dict(row) for row in list(chunked(list_words_p.items(), int(batch_size)))]
         # [{'a': 1, 'b': 2}, {'c': 3, 'd': 4}, {'e': 5}]  # example batch_size = 2
         
         for batch in tqdm(batches, ncols=100):
@@ -117,12 +117,12 @@ class Text2PhonemeSequence:
         print("\nDone!")
     
 
-    def infer_sentence(self, sentence="", seperate_syllabel_token="_"):
+    def infer_sentence(self, sentence: str = "", seperate_syllabel_token: str = "_"):
         """Infer a sentence
         """
         list_words = sentence.split(" ")
         list_phones = []
-        
+
         for i in range(len(list_words)):
             list_words[i] = list_words[i].replace(seperate_syllabel_token, " ")
             if list_words[i] in self.phone_dict:
