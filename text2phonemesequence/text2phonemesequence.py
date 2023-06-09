@@ -104,7 +104,7 @@ class Text2PhonemeSequence:
             self.phone_dict[w] = list(set(p))
         
         print(f"\nSaving vocabulary to {output_file}")
-        with open(output_file, 'w') as f:
+        with open(output_file, 'w', encoding="utf-8") as f:
             for line in tqdm(list_lines):
                 line = line.strip().split("|")
                 prefix = line[0]
