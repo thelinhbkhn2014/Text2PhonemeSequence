@@ -37,6 +37,6 @@ setup(
     classifiers=classifiers,
     keyword="text2phonemesequence",
     packages=find_packages(),
-    install_requires=["transformers", "tqdm", "segments"],
+    install_requires=["transformers", "tqdm", "segments", "more-itertools"],
     python_requires=">=3.6",
 )
