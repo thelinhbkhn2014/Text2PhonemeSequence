@@ -3,6 +3,7 @@ from segments import Tokenizer
 import os
 from tqdm import tqdm
 from more_itertools import chunked
+from collections import OrderedDict
 
 
 class Text2PhonemeSequence:
@@ -101,7 +102,7 @@ class Text2PhonemeSequence:
             except:
                 segmented_phone = self.segment_tool(p[0])
             p.append(segmented_phone)
-            self.phone_dict[w] = list(set(p))
+            self.phone_dict[w] = list(OrderedDict.fromkeys(p))
         
         print(f"\nSaving vocabulary to {output_file}")
         output = []
