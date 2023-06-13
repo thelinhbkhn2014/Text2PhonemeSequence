@@ -17,7 +17,7 @@ class Text2PhonemeSequence:
         self.is_cuda = is_cuda
         if self.is_cuda:
             self.model = self.model.cuda()
-        self.punctuation = list('.?!,:;-()[]{}<>"') + list("'/‘”“/&#~@^|") + ['...', '*']
+        self.punctuation = list('.?!¡,:;-()[]{}<>"') + list("'/‘”“/&#~@^|") + ['...', '*']
         self.update_phone = {punc: [punc] for punc in self.punctuation}
         self.segment_tool = Tokenizer()
         self.language = language
